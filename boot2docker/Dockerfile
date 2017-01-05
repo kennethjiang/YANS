@@ -9,6 +9,12 @@ RUN git clone https://git.kernel.org/pub/scm/linux/kernel/git/shemminger/bridge-
     make && \
     make DESTDIR=$ROOTFS install
 
+RUN curl -fL https://www.kernel.org/pub/linux/utils/util-linux/v2.29/util-linux-2.29.tar.xz | tar -C / -xJ && \
+    cd util-linux-2.29 && \
+    ./configure && \
+    make nsenter && \
+    cp nsenter $ROOTFS/usr/local/bin
+
 RUN /tmp/make_iso.sh
 CMD ["cat", "boot2docker.iso"]
 
