@@ -20,7 +20,7 @@ from docopt import docopt
 import yaml
 import logging
 
-from docker_command import destroy_links, create_nodes, create_links, ensure_docker_machine, destroy_nodes
+from docker_command import destroy_links, create_nodes, create_links, ensure_docker_machine, destroy_nodes, link_node
 
 __version__ = "0.1.0"
 __author__ = "Kenneth Jiang"
@@ -46,6 +46,10 @@ def main():
     if args['up']:
         create_links(links)
         create_nodes(nodes)
+        for lnk in links:
+            for n in lnk['nodes']:
+                link_node(lnk, n)
+
     if args['destroy']:
         destroy_nodes(nodes)
         destroy_links(links)

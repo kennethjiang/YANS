@@ -4,10 +4,16 @@ from logging import debug
 import sys
 import subprocess
 import os
+import uuid
+import string
 
 PREFIX = 'YANS-'
 
 docker_client = None
+
+def random_id(size=6, chars=string.letters + string.digits):
+    import random
+    return ''.join(random.choice(chars) for _ in range(size))
 
 def exists(exe):
     return any(os.access(os.path.join(path, exe), os.X_OK) for path in os.environ["PATH"].split(os.pathsep))
@@ -31,24 +37,24 @@ def docker_machine_run(cmd):
     else:
         return run('docker-machine ssh YANS-machine ' + cmd)
 
+def bridge_name(link):
+    return PREFIX + link['name']
+
 def create_links(links):
     for lnk in links:
-        lnk_name = PREFIX + lnk['name']
-        docker_machine_run('sudo /usr/local/sbin/brctl addbr ' + lnk_name)
-        docker_machine_run('sudo /usr/local/sbin/ip link set ' + lnk_name + ' up')
+        docker_machine_run('sudo /usr/local/sbin/brctl addbr ' + bridge_name(lnk))
+        docker_machine_run('sudo /usr/local/sbin/ip link set ' + bridge_name(lnk) + ' up')
 
 def destroy_links(links):
     for lnk in links:
-        lnk_name = PREFIX + lnk['name']
-        docker_machine_run('sudo /usr/local/sbin/ip link set ' + lnk_name + ' down')
-        docker_machine_run('sudo /usr/local/sbin/brctl delbr ' + lnk_name)
+        docker_machine_run('sudo /usr/local/sbin/ip link set ' + bridge_name(lnk) + ' down')
+        docker_machine_run('sudo /usr/local/sbin/brctl delbr ' + bridge_name(lnk))
 
 def create_nodes(nodes):
-    dc = client()
-    dc.images.pull('kennethjiang/yans-node')
+    client().images.pull('kennethjiang/yans-node')
     for node in nodes:
         node_name = PREFIX + node
-        dc.containers.run('kennethjiang/yans-node', name=node_name, command='sleep 3153600000', detach=True, privileged=True)
+        client().containers.run('kennethjiang/yans-node', name=node_name, command='sleep 3153600000', detach=True, privileged=True)
 
 def destroy_nodes(nodes):
     dc = client()
@@ -58,6 +64,15 @@ def destroy_nodes(nodes):
             dc.containers.get(node_name).remove(force=True)
         except docker.errors.NotFound:
             pass
+
+def link_node(link, node):
+    if_name = 'yans' + random_id()
+    if_peer = if_name + '-p'
+    docker_machine_run('sudo /usr/local/sbin/ip link add ' + if_name + ' type veth peer name ' + if_peer)
+    docker_machine_run('sudo /usr/local/sbin/ip link set ' + if_peer + ' up')
+    docker_machine_run('sudo /usr/local/sbin/brctl addif ' + bridge_name(link) + ' ' + if_peer)
+    container_pid = str(client().api.inspect_container(node)['State']['Pid'])
+    docker_machine_run('sudo /usr/local/sbin/ip link set netns ' + container_pid + ' dev ' + if_name)
 
 def ensure_docker_machine():
     if is_linux(): # docker machine not required on linux
