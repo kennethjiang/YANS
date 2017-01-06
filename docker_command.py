@@ -1,19 +1,22 @@
 import docker
 
-import logging
+from logging import debug
 import sys
 import subprocess
 import os
 
 PREFIX = 'YANS-'
 
-client = None
+docker_client = None
 
 def exists(exe):
     return any(os.access(os.path.join(path, exe), os.X_OK) for path in os.environ["PATH"].split(os.pathsep))
 
+def is_linux():
+    return sys.platform == 'linux' or sys.platform == 'linux2'
+
 def run(cmd, cont=False):
-    logging.debug('Running command: ' + cmd)
+    debug('Running command: ' + cmd)
 
     import shlex
     args = shlex.split(cmd)
@@ -23,7 +26,7 @@ def run(cmd, cont=False):
         return subprocess.check_output(args)
 
 def docker_machine_run(cmd):
-    if sys.platform == 'linux' or sys.platform == 'linux2':
+    if is_linux():
         return run(cmd)
     else:
         return run('docker-machine ssh YANS-machine ' + cmd)
@@ -41,11 +44,26 @@ def destroy_links(links):
         docker_machine_run('sudo /usr/local/sbin/brctl delbr ' + lnk_name)
 
 def create_nodes(nodes):
-    pass
+    dc = client()
+    dc.images.pull('kennethjiang/yans-node')
+    for node in nodes:
+        node_name = PREFIX + node
+        dc.containers.run('kennethjiang/yans-node', name=node_name, command='sleep 3153600000', detach=True, privileged=True)
 
+def destroy_nodes(nodes):
+    dc = client()
+    for node in nodes:
+        node_name = PREFIX + node
+        try:
+            dc.containers.get(node_name).remove(force=True)
+        except docker.errors.NotFound:
+            pass
 
 def ensure_docker_machine():
-    if sys.platform == 'linux' or sys.platform == 'linux2': # docker machine not required on linux
+    if is_linux(): # docker machine not required on linux
+        return
+def ensure_docker_machine():
+    if is_linux(): # docker machine not required on linux
         return
 
     if not exists('docker-machine'):
@@ -58,12 +76,17 @@ def ensure_docker_machine():
     run('docker-machine start YANS-machine', cont=True) # make sure YANS-machine is started
 
 
-def ensure_client():
-    global client
-    if not client:
-        out = run('docker-machine env YANS-machine')
-        import re
-        for (name, value) in re.findall('export ([^=]+)=(.+)', out):
-            os.environ[name] = value
+def client():
+    ensure_docker_client()
+    return docker_client
 
-        client = docker.from_env()
+def ensure_docker_client():
+    global docker_client
+    if not docker_client:
+        if not is_linux():
+            out = run('docker-machine env YANS-machine')
+            import re
+            for (name, value) in re.findall('export ([^=]+)="(.+)"', out):
+                os.environ[name] = value
+
+        docker_client = docker.from_env()
