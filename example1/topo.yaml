@@ -1,0 +1,8 @@
+- name: link1
+  nodes:
+     - node1
+     - node2
+- name: link2
+  nodes:
+     - node1
+- name: link3
