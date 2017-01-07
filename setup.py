@@ -8,6 +8,7 @@ from setuptools.command.test import test as TestCommand
 REQUIRES = [
     'docopt',
     'PyYAML',
+    'docker',
 ]
 
 class PyTest(TestCommand):
