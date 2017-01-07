@@ -55,9 +55,9 @@ def destroy_nodes(nodes):
 def bind_interface(interface):
     docker_machine_run('sudo /usr/local/sbin/ip link add ' + interface.name + ' type veth peer name ' + interface.peer_name)
     docker_machine_run('sudo /usr/local/sbin/ip link set ' + interface.peer_name + ' up')
-    docker_machine_run('sudo /usr/local/sbin/brctl addif ' + interface.link.bridge_name + ' ' + if_peer)
-    container_pid = str(client().api.inspect_container(node)['State']['Pid'])
-    docker_machine_run('sudo /usr/local/sbin/ip link set netns ' + container_pid + ' dev ' + if_name)
+    docker_machine_run('sudo /usr/local/sbin/brctl addif ' + interface.link.bridge_name + ' ' + interface.peer_name)
+    container_pid = str(client().api.inspect_container( interface.node.container_name )['State']['Pid'])
+    docker_machine_run('sudo /usr/local/sbin/ip link set netns ' + container_pid + ' dev ' + interface.name)
 
 def ensure_docker_machine():
     if is_linux(): # docker machine not required on linux
