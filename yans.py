@@ -17,10 +17,11 @@ Options:
 
 from __future__ import unicode_literals, print_function
 from docopt import docopt
-import yaml
 import logging
+import sys
 
-from docker_command import destroy_links, create_nodes, create_links, ensure_docker_machine, destroy_nodes, link_node
+from docker_command import destroy_links, create_nodes, create_links, ensure_docker_machine, destroy_nodes, bind_interface
+from topology import Topology, TopologySpecError
 
 __version__ = "0.1.0"
 __author__ = "Kenneth Jiang"
@@ -30,29 +31,26 @@ def main():
     '''Main entry point for the yans CLI.'''
     args = docopt(__doc__, version=__version__)
 
+    ensure_docker_machine()
+
     if args['--verbose']:
         logging.getLogger().setLevel(logging.DEBUG)
 
-    with open(args['--topo'], 'r') as f:
-        topo = yaml.load(f)
-
-    ensure_docker_machine()
-
-    links = topo['links']
-    nodes = [l['nodes'] for l in topo['links']]
-    nodes = [item for sublist in nodes for item in sublist] # Python's way to flatten nested lists. dont' ask me why: http://stackoverflow.com/questions/952914/making-a-flat-list-out-of-list-of-lists-in-python
-    nodes = set(nodes) # Python's way of getting unique list
+    try:
+        topo = Topology(args['--topo'])
+    except TopologySpecError as err:
+        sys.exit(err)
 
     if args['up']:
-        create_links(links)
-        create_nodes(nodes)
-        for lnk in links:
-            for n in lnk['nodes']:
-                link_node(lnk, n)
+        create_links(topo.links)
+        create_nodes(topo.nodes)
+        for link in topo.links:
+            for interface in link.interfaces:
+                bind_interface(interface)
 
     if args['destroy']:
-        destroy_nodes(nodes)
-        destroy_links(links)
+        destroy_nodes(topo.nodes)
+        destroy_links(topo.links)
 
 if __name__ == '__main__':
     main()
