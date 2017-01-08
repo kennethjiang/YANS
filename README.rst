@@ -1,5 +1,5 @@
 ===============================
-yans
+YANS
 ===============================
 
 .. image:: https://badge.fury.io/py/yans.png
@@ -7,9 +7,6 @@ yans
 
 .. image:: https://travis-ci.org/kennethjiang/yans.png?branch=master
         :target: https://travis-ci.org/kennethjiang/yans
-
-.. image:: https://pypip.in/d/yans/badge.png
-        :target: https://crate.io/packages/yans?version=latest
 
 
 Yet Another Network Simulator

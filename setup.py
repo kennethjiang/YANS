@@ -48,17 +48,17 @@ def read(fname):
     return content
 
 setup(
-    name='yans',
+    name='YANS',
     version="0.1.0",
     description='Yet Another Network Simulator',
     long_description=read("README.rst"),
     author='Kenneth Jiang',
     author_email='kenneth.jiang@gmail.com',
-    url='https://github.com/kennethjiang/yans',
+    url='https://github.com/kennethjiang/YANS',
     install_requires=REQUIRES,
     license=read("LICENSE"),
     zip_safe=False,
-    keywords='yans',
+    keywords='network simulator',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
