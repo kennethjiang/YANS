@@ -2,19 +2,48 @@
 YANS
 ===============================
 
-.. image:: https://badge.fury.io/py/yans.png
-    :target: http://badge.fury.io/py/yans
+.. image:: https://badge.fury.io/py/YANS.png
+    :target: http://badge.fury.io/py/YANS
 
-.. image:: https://travis-ci.org/kennethjiang/yans.png?branch=master
-        :target: https://travis-ci.org/kennethjiang/yans
+.. image:: https://travis-ci.org/kennethjiang/YANS.png?branch=master
+        :target: https://travis-ci.org/kennethjiang/YANS
 
 
-Yet Another Network Simulator
+**Yet Another Network Simulator**
 
-Features
---------
+Getting Started
+====================
 
-* TODO
+Installation:
+------------------
+
+.. code:: bash
+
+    pip install YANS
+
+
+Create a file named ``topo.yaml``
+-----------------------------------------------
+
+.. code::
+
+    - name: link1
+      nodes:
+         - node1
+         - node2
+    - name: link2
+      nodes:
+         - node1
+    - name: link3
+
+
+Go!
+------------
+
+In the same directory as file ``topo.yaml``, run::
+
+    yans up
+
 
 Requirements
 ------------
