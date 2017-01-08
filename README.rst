@@ -14,8 +14,8 @@ YANS
 Getting Started
 ====================
 
-Install prerequisites:
-------------------------
+0. Install prerequisites:
+--------------------------
 
 Mac OS X
 ^^^^^^^^
@@ -30,7 +30,7 @@ Ubuntu
 * ``sudo apt install bridge-utils``
 
 
-Install YANS
+1. Install YANS
 ------------------
 
 .. code:: bash
@@ -38,22 +38,23 @@ Install YANS
     pip install YANS
 
 
-Create a file named ``topo.yaml``
+2. Create a file named ``topo.yaml``
 -----------------------------------------------
 
 .. code::
 
-    - name: link1
-      nodes:
-         - node1
-         - node2
-    - name: link2
-      nodes:
-         - node1
-    - name: link3
+    links:
+        - name: link1
+          nodes:
+             - node1
+             - node2
+        - name: link2
+          nodes:
+             - node1
+        - name: link3
 
 
-Go!
+3. Go!
 ------------
 
 Linux
