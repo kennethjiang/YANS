@@ -14,7 +14,7 @@ YANS
 Getting Started
 ====================
 
-Installation:
+Install YANS
 ------------------
 
 .. code:: bash

@@ -71,7 +71,7 @@ setup(
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy'
     ],
-    py_modules=["yans"],
+    py_modules=["yans", "docker_command", "topology"],
     entry_points={
         'console_scripts': [
             "yans = yans:main"
