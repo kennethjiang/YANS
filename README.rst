@@ -14,6 +14,22 @@ YANS
 Getting Started
 ====================
 
+Install prerequisites:
+------------------------
+
+Mac OS X
+^^^^^^^^
+
+* `Docker <https://docs.docker.com/engine/installation/mac/>`__
+* `Docker Machine <https://docs.docker.com/machine/install-machine/>`__
+
+Ubuntu
+^^^^^^^^
+
+* `Docker <https://docs.docker.com/engine/installation/linux/ubuntulinux/>`__
+* ``sudo apt install bridge-utils``
+
+
 Install YANS
 ------------------
 
@@ -40,9 +56,16 @@ Create a file named ``topo.yaml``
 Go!
 ------------
 
-In the same directory as file ``topo.yaml``, run::
+Linux
+^^^^^^^
 
-    yans up
+    sudo yans -t <path_to_topo.yaml> up
+
+
+Mac OS X
+^^^^^^^^^^
+
+    yans -t <path_to_topo.yaml> up
 
 
 Requirements
