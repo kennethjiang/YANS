@@ -47,6 +47,7 @@ def main():
         for link in topo.links:
             for interface in link.interfaces:
                 bind_interface(interface)
+        topo.draw()
 
     if args['destroy']:
         destroy_nodes(topo.nodes)

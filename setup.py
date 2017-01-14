@@ -9,6 +9,7 @@ REQUIRES = [
     'docopt',
     'PyYAML',
     'docker',
+    'termcolor',
 ]
 
 class PyTest(TestCommand):

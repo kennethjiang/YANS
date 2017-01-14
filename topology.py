@@ -1,6 +1,7 @@
 import yaml
 import uuid
 import string
+import sys
 
 class TopologySpecError(Exception):
     pass
@@ -27,6 +28,18 @@ class Topology:
             ajacent_nodes = [n for n in self.nodes if n.name in link_dict.get('nodes', [])]
             self.links.append(Link(link_dict, ajacent_nodes))
 
+    def draw(self):
+        from termcolor import colored, cprint
+        for link in self.links:
+            cprint(link.name, 'green')
+            print('*')
+            for interface in link.interfaces:
+                print('|')
+                sys.stdout.write(5*'-' + '<')
+                cprint(interface.name, 'yellow', end='')
+                sys.stdout.write('>' + 5*'-')
+                cprint(interface.node.name, 'red')
+            print('')
 
 class Link:
 
