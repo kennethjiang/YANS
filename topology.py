@@ -28,6 +28,10 @@ class Topology:
             ajacent_nodes = [n for n in self.nodes if n.name in link_dict.get('nodes', [])]
             self.links.append(Link(link_dict, ajacent_nodes))
 
+    def node_by_name(self, name):
+        matches = [n for n in self.nodes if n.name == name]
+        return matches[0] if matches else None
+
     def draw(self):
         from termcolor import colored, cprint
         for link in self.links:

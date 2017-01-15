@@ -45,12 +45,16 @@ def create_nodes(nodes):
         client().containers.run('kennethjiang/yans-node', name=node.container_name, command='sleep 3153600000', detach=True, privileged=True)
 
 def destroy_nodes(nodes):
-    dc = client()
     for node in nodes:
         try:
-            dc.containers.get(node.container_name).remove(force=True)
+            client().containers.get(node.container_name).remove(force=True)
         except docker.errors.NotFound:
             pass
+
+def attach_node(node):
+    set_docker_machine_env()
+    import shlex
+    subprocess.call(shlex.split('docker exec -it --privileged ' + node.container_name + ' bash'), stdin=sys.stdin, stdout=sys.stdout)
 
 def bind_interface(interface):
     docker_machine_run('sudo ip link add ' + interface.name + ' type veth peer name ' + interface.peer_name)
@@ -59,9 +63,6 @@ def bind_interface(interface):
     container_pid = str(client().api.inspect_container( interface.node.container_name )['State']['Pid'])
     docker_machine_run('sudo ip link set netns ' + container_pid + ' dev ' + interface.name)
 
-def ensure_docker_machine():
-    if is_linux(): # docker machine not required on linux
-        return
 def ensure_docker_machine():
     if is_linux(): # docker machine not required on linux
         return
@@ -83,10 +84,12 @@ def client():
 def ensure_docker_client():
     global docker_client
     if not docker_client:
-        if not is_linux():
-            out = run('docker-machine env YANS-machine')
-            import re
-            for (name, value) in re.findall('export ([^=]+)="(.+)"', out):
-                os.environ[name] = value
-
+        set_docker_machine_env()
         docker_client = docker.from_env()
+
+def set_docker_machine_env():
+    if not is_linux():
+        out = run('docker-machine env YANS-machine')
+        import re
+        for (name, value) in re.findall('export ([^=]+)="(.+)"', out):
+            os.environ[name] = value
