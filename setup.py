@@ -50,7 +50,7 @@ def read(fname):
 
 setup(
     name='YANS',
-    version="0.2.0",
+    version="0.2.1",
     description='Yet Another Network Simulator',
     long_description=read("README.rst"),
     author='Kenneth Jiang',
