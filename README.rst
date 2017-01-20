@@ -11,6 +11,8 @@ YANS
 
 **Yet Another Network Simulator**
 
+.. image:: /screenplay.gif?raw=true
+
 Getting Started
 ====================
 
