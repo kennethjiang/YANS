@@ -16,6 +16,7 @@ YANS is a `Docker <https://www.docker.com/>`_-based network simulator. It is lig
 .. image:: /screenplay.gif?raw=true
    :height: 512 px
    :width: 499 px
+   :scale: 50 %
 
 Getting Started
 ====================
