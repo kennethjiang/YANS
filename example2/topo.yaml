@@ -1,0 +1,13 @@
+links:
+    - name: link1
+      nodes:
+         - node1
+         - node2
+         - node3
+    - name: link2
+      nodes:
+         - node4
+         - node5
+         - node6
+         - node1
+    - name: link3
