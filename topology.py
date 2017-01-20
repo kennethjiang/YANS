@@ -34,14 +34,21 @@ class Topology:
 
     def draw(self):
         from termcolor import colored, cprint
+        print('')
+        cprint('Link', 'green', end='')
+        sys.stdout.write(7*' ')
+        cprint('Network Interface', 'yellow', end='')
+        sys.stdout.write(5*' ')
+        cprint('Node', 'red')
+        print(50*'-' + '\n')
         for link in self.links:
             cprint(link.name, 'green')
-            print('*')
+            print('|')
             for interface in link.interfaces:
                 print('|')
-                sys.stdout.write(5*'-' + '<')
+                sys.stdout.write(12*'-' + '<')
                 cprint(interface.name, 'yellow', end='')
-                sys.stdout.write('>' + 5*'-')
+                sys.stdout.write('>' + 8*'-')
                 cprint(interface.node.name, 'red')
             print('')
 

@@ -70,11 +70,11 @@ Mac OS X
 
 
 Requirements
-------------
+==============
 
 - Python >= 2.6 or >= 3.3
 
 License
--------
+===============
 
 MIT licensed. See the bundled `LICENSE <https://github.com/kennethjiang/yans/blob/master/LICENSE>`_ file for more details.

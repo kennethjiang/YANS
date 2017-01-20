@@ -50,6 +50,9 @@ def main():
             for interface in link.interfaces:
                 bind_interface(interface)
         topo.draw()
+        print('To log into each node:')
+        for node in topo.nodes:
+            print('`$ yans -t ' + topo_file + ' console ' + node.name + '`')
 
     if args['destroy']:
         destroy_nodes(topo.nodes)
